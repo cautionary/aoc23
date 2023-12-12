@@ -59,50 +59,6 @@ for i, line in enumerate(lines):
         if complex(i, j) not in looptiles:
             groundtiles.add(complex(i, j))
 
-for groundtile in groundtiles.copy():
-    crossedtiles = set()
-    if groundtile.real < len(lines) / 3:
-        remove = True
-        for i in range(int(groundtile.real), -1, -1):
-            crossedtiles.add(complex(i, groundtile.imag))
-            if complex(i, groundtile.imag) in looptiles:
-                remove = False
-        if remove:
-            groundtiles.remove(groundtile)
-            outsidetiles.update(crossedtiles)
-    crossedtiles.clear()
-    if groundtile.real > len(lines) - len(lines) / 3:
-        if groundtile in groundtiles:
-            remove = True
-            for i in range(int(groundtile.real), len(lines)):
-                crossedtiles.add(complex(i, groundtile.imag))
-                if complex(i, groundtile.imag) in looptiles:
-                    remove = False
-            if remove:
-                groundtiles.remove(groundtile)
-                outsidetiles.update(crossedtiles)
-    crossedtiles.clear()
-    if groundtile.imag < len(lines[0]) / 3:
-        if groundtile in groundtiles:
-            remove = True
-            for i in range(int(groundtile.imag), -1, -1):
-                crossedtiles.add(complex(groundtile.real, i))
-                if complex(groundtile.real, i) in looptiles:
-                    remove = False
-            if remove:
-                outsidetiles.update(crossedtiles)
-                groundtiles.remove(groundtile)
-    if groundtile.imag > len(lines[0]) - len(lines[0]) / 3:
-        if groundtile in groundtiles:
-            remove = True
-            for i in range(int(groundtile.imag), len(lines[0])):
-                crossedtiles.add(complex(groundtile.real, i))
-                if complex(groundtile.real, i) in looptiles:
-                    remove = False
-            if remove:
-                outsidetiles.update(crossedtiles)
-                groundtiles.remove(groundtile)
-
 
 for groundtile in groundtiles.copy():
     testline = ""
@@ -110,7 +66,7 @@ for groundtile in groundtiles.copy():
         if complex(groundtile.real, i) in looptiles:
             testline = testline + lines[int(groundtile.real)][i]
 
-    tiles = testline.replace('-', '').replace('FJ', '|').replace('F7', '').replace('LJ', '').replace('L7', '|')
+    tiles = testline.replace('-', '').replace('FJ', '|').replace('F7', '').replace('LJ', '').replace('L7', '|').replace('S', '|')
 
     if tiles.count('|') % 2 == 0:
         groundtiles.remove(groundtile)
