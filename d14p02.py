@@ -38,6 +38,7 @@ rock_history = []
 
 while rocks not in rock_history:
     rock_history.append(rocks.copy())
+    print(len(rock_history))
 
     #Roll north
     for i in range(len(lines)):
@@ -74,7 +75,6 @@ while rocks not in rock_history:
                 rocks.add(complex(i, obstacles_t[i][j] - 1 - k))
         
 
-    print(len(rock_history))
 #    for rock in sorted(rocks, key=getreal):
 #        obsinway =([i for i in obstacles[int(rock.imag)] if i < rock.real])
 #        rocks_final.add(complex(max(obsinway) + 1, rock.imag))
