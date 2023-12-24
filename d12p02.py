@@ -1,55 +1,49 @@
-import re
-infile = open('d12s01.txt', 'r')
-lines = infile.readlines()
+import functools
+
+@functools.cache
+def check(cond, counts):
+    if not counts:
+        if '#' in cond:
+            return 0
+        else:
+            return 1
+    if not cond:
+        if not counts:
+            return 1
+        else:
+            return 0
+ 
+    result = 0
+
+    if cond[0] == '?' or cond[0] == '.':
+        result += check(cond[1:], counts)        
+
+    if cond[0] == '?' or cond[0] == '#':
+        if (counts[0] <= len(cond)
+            and '.' not in cond[0:counts[0]]
+            and (counts[0] == len(cond) or cond[counts[0]] != "#")):
+            result += check(cond[counts[0] + 1 :], counts[1:])
+
+    return result
+
+inputdata = open('d12i01.txt', 'r')
+lines = inputdata.readlines()
+
+lines = [line.strip() for line in lines]
+
 
 total = 0
 for line in lines:
-    record = line.strip().split()
-    cond = record[0]
-    for _ in range(4):
-        cond += "?" + record[0]
-    pattern = "(^|^[\.?]+)"
+    cond = line.split()[0]
+
+    for i in range(4):
+        cond += "?" + line.split()[0]
+   
     counts = []
-    for _ in range(5):
-        counts += record[1].split(',')
-    for i, count in enumerate(counts):
-        for j in range(int(count)):
-            pattern += "[#?]"
-        if i != len(counts) - 1:
-            pattern += "[\.?]+"
-    pattern += "($|[\.?]+$)"
-
-    unknowns = [i for i, char in enumerate(cond) if char == '?']
-
-    print(len(unknowns))
-    for unk in unknowns.copy():
-        dotrecord = cond[0:unk] + "." + cond[unk+1:]
-        dotmatch = re.match(pattern, dotrecord)
-        hashrecord = cond[0:unk] + "#" + cond[unk+1:]
-        hashmatch = re.match(pattern, hashrecord)
-        if dotmatch and not hashmatch:
-            cond = dotrecord
-            unknowns.remove(unk)
-        elif hashmatch and not dotmatch:
-            cond = hashrecord
-            unknowns.remove(unk)
-    print(len(unknowns))
-    print()
-#    for i in range(2 ** len(unknowns)):
-#        bytemap = bin(i)[2:].zfill(len(unknowns))
-#
-#        unkmap = bytemap.replace('0', '.').replace('1', '#')
-#        row = ""
-#        unkcount = 0
-#        for i, char in enumerate(record[0]):
-#            if char == '?':
-#                row += unkmap[unkcount]
-#                unkcount += 1
-#            else:
-#                row += char
-#
-#        if re.match(pattern, row):
-#            total += 1
+    for i in range(5):
+        for n in line.split()[1].split(','):
+            counts.append(int(n))
+    result = check(cond, tuple(counts))
+    total += result
 
 print(total)
-
